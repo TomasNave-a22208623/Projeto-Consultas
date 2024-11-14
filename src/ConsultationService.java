@@ -7,13 +7,13 @@ import java.util.List;
 
 public class ConsultationService {
 
-    public void reservarConsulta(String clinica , String especialidade , String hora , int userId ){
+    public void reservarConsulta(String clinica , String especialidade , String dataHora , int userId ){
         String sql = "INSERT INTO consultations (clinic_name , specialty, date_time , user_id) VALUES (?,?,?,?)";
 
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(sql)){
             stmt.setString(1, clinica);
             stmt.setString(2, especialidade);
-            stmt.setString(3, hora);
+            stmt.setString(3, dataHora);
             stmt.setInt(4, userId);
             stmt.executeUpdate();
 
@@ -64,7 +64,39 @@ public class ConsultationService {
 
     }
 
-    
+    public List<String> listarConsultas(int userID){
+
+        String sql = "SELECT * FROM consultations  WHERE user_id = ?";
+        List<String> consultas = new ArrayList<>();
+
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(sql); ResultSet resultado = stmt.executeQuery()){
+            stmt.setInt(1, userID);
+            stmt.executeUpdate();
+
+            while(resultado.next()){
+                String consulta = "ID: " + resultado.getInt("consultation_id") +
+                                      ", Clinic: " + resultado.getString("clinic_name") +
+                                      ", Specialty: " + resultado.getString("specialty") +
+                                      ", Date & Time: " + resultado.getString("date_time");
+
+                consultas.add(consulta);
+            }
+
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return consultas;
+
+    }
+
+
+
+
+
+    }
+ 
 
 
 
@@ -72,6 +104,3 @@ public class ConsultationService {
 
 
 
-
-
-}
