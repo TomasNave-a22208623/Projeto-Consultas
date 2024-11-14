@@ -4,5 +4,6 @@ public class App {
 
         // Registrando um usuário de teste
         userService.registerUser("testuser@example.com", "testpassword");
+        userService.registerUser("ola", "ola");
     }
 }
