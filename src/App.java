@@ -6,6 +6,7 @@ public class App {
         userService.registerUser("testuser@example.com", "testpassword");
         userService.registerUser("ola", "ola");
         userService.registerUser("andre", "andre");
+        userService.registerUser("tomas" , "tomas");
         
     }
 }
