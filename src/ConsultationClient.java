@@ -17,7 +17,6 @@ public class ConsultationClient {
                 System.out.println("2. Listar todas as consultas");
                 System.out.println("3. Atualizar uma consulta");
                 System.out.println("4. Remover uma consulta");
-                System.out.println("5. Sair");
                 System.out.print("Escolha uma opcao: ");
                 
                 int option = scanner.nextInt();
@@ -49,7 +48,6 @@ public class ConsultationClient {
 
                         for(String consulta : consultas){
                             System.out.println(consulta);
-                            
                         }
                         break;
 
