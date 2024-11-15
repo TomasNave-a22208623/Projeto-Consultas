@@ -3,8 +3,7 @@ import java.util.List;
 public class App {
     public static void main(String[] args) throws Exception {
         UserService userService = new UserService();
-            ///yasgdashdjkashfhas
-        // Registrando um usuário de test
+         // ahahahahahhahahahahahahah
         
         ConsultationService consultationService = new ConsultationService();
 

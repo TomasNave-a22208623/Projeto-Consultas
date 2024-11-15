@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class ConsultationClient {
     public static void main(String[] args) {
         try {
-            String serverURL = "rmi://localhost/ConsultationServer";
+            String serverURL = "rmi://" + args[0] + "/ConsultationServer";
             ConsultationServerIntf server = (ConsultationServerIntf) Naming.lookup(serverURL);
 
             Scanner scanner = new Scanner(System.in);
@@ -25,10 +25,11 @@ public class ConsultationClient {
 
                 int userId = 1;
 
+
                 switch (option) {
                     case 1:
                         
-                        System.out.print("Novo nome da Clínica: ");
+                        System.out.print("Novo nome da Clinica: ");
                         String novaClinica = scanner.nextLine();
 
                         System.out.print("Nova Especialidade: ");
