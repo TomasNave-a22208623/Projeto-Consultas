@@ -18,7 +18,7 @@ public class ConsultationClient {
                 System.out.println("3. Atualizar uma consulta");
                 System.out.println("4. Remover uma consulta");
                 System.out.println("5. Sair");
-                System.out.print("Escolha uma opção: ");
+                System.out.print("Escolha uma opcao: ");
                 
                 int option = scanner.nextInt();
                 scanner.nextLine();
@@ -57,7 +57,7 @@ public class ConsultationClient {
                         System.out.print("ID da Consulta a ser atualizada: ");
                         int consultaId = scanner.nextInt();
                         scanner.nextLine(); 
-                        System.out.print("Novo nome da Clínica: ");
+                        System.out.print("Novo nome da Clinica: ");
                         novaClinica = scanner.nextLine();
 
                         System.out.print("Nova Especialidade: ");
@@ -79,7 +79,7 @@ public class ConsultationClient {
                         break;
 
                     default:
-                        System.out.println("Opção inválida. Por favor, tente novamente.");
+                        System.out.println("Opcao invalida. Por favor, tente novamente.");
                         break;
                 }
             }
