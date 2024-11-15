@@ -6,5 +6,4 @@ public interface ConsultationServerIntf extends Remote{
     List<String> listarConsultas(int userID) throws RemoteException;
     void updateConsulta(int consultationId, String newClinicName, String newSpecialty, String newDateTime) throws RemoteException;
     void cancelarConsulta(int consultationId) throws RemoteException;
-
 }
