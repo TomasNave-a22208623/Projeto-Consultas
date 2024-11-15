@@ -76,6 +76,8 @@ public class ConsultationService {
             stmt.setInt(1, userID);
             
             ResultSet resultado = stmt.executeQuery();
+
+            System.out.println("consultas encontradas para "+ userID);
             
             while(resultado.next()){
                 String consulta = "ID: " + resultado.getInt("consultation_id") +

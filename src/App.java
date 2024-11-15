@@ -5,9 +5,9 @@ public class App {
         UserService userService = new UserService();
          // ahahahahahhahahahahahahah
         
-        ConsultationService consultationService = new ConsultationService();
+        ConsultationServerImpl consult = new ConsultationServerImpl();
 
-        List<String> consultations = consultationService.listarConsultas(1);
+        List<String> consultations = consult.listarConsultas(1);
             consultations.forEach(System.out::println);
         
     }
