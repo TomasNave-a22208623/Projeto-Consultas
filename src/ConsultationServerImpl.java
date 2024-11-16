@@ -27,7 +27,7 @@ public class ConsultationServerImpl extends UnicastRemoteObject implements Consu
     }
 
     @Override
-    public void cancelarConsulta(int consultationId) throws RemoteException {
-        consultationService.cancelarConsulta(consultationId);
+    public String cancelarConsulta(int consultationId) throws RemoteException {
+        return consultationService.cancelarConsulta(consultationId);
     }
 }

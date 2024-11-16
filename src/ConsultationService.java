@@ -8,6 +8,10 @@ import java.util.List;
 
 public class ConsultationService {
 
+    //------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------(Reservar)---------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------
+
     public String reservarConsulta(String clinica , String especialidade , String dataHora , int userId ){
         
         //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
@@ -121,13 +125,38 @@ public class ConsultationService {
         }
 
     }
-    
+
+     //------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------(Cancelar)---------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------
 
 
-    public void cancelarConsulta(int consultationId){
-        String sql = "DELETE FROM consultations WHERE  consultation_id = ?";
+
+    public String cancelarConsulta(int consultationId){
+
+        //-----------------------------Verificar se a consullta existe---------------------------------//
+
+        String checkConsultaIDSql = "SELECT FROM consultations WHERE  consultation_id = ?";
         
-        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(sql)){
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaIDSql)){
+            stmt.setInt(1, consultationId);
+
+            ResultSet resultSet = stmt.executeQuery();
+            if(!resultSet.next()){
+                return "A consulta fornecida nao existe";
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return "Erro ao verificar a consulta fornecida";
+        }
+
+
+        //----------------------------------Delete Consulta--------------------------------------------//
+
+        String deleteConsultaSql = "DELETE FROM consultations WHERE  consultation_id = ?";
+        
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(deleteConsultaSql)){
             stmt.setInt(1, consultationId);
             stmt.executeUpdate();
 
@@ -136,12 +165,25 @@ public class ConsultationService {
 
         }catch(SQLException e){
             e.printStackTrace();
+            return "Erro ao remover a consulta";
         }
 
+        return "Erro inesperado ao remover a consulta";
     }
 
 
+    //------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------(Update)---------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
     public void updateConsulta(int consultationId , String novaclinica , String novaEspecialidade , String novaData){
+
+
+
         String sql = "UPDATE consultations SET clinic_name = ? , specialty = ? , date_time = ? WHERE  consultation_id = ?";
         
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(sql)){
@@ -158,9 +200,13 @@ public class ConsultationService {
             e.printStackTrace();
         }
 
-
-
     }
+
+    //------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------(listar Consultas)------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------
+
+
 
     public List<String> listarConsultas(int userID){
 

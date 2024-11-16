@@ -23,7 +23,7 @@ public class ConsultationClient {
                 scanner.nextLine();
 
                 int userId = 1;
-
+                String respostaServidor = "";
 
                 switch (option) {
                     case 1:
@@ -37,7 +37,7 @@ public class ConsultationClient {
                         System.out.print("Nova Data e Hora (YYYY-MM-DD HH:MM): ");
                         String novaData = scanner.nextLine();
                         
-                        String respostaServidor = server.reservarConsulta(novaClinica, novaEspecialidade, novaData, userId);
+                        respostaServidor = server.reservarConsulta(novaClinica, novaEspecialidade, novaData, userId);
                         System.out.println(respostaServidor);
                         break;
 
@@ -72,8 +72,8 @@ public class ConsultationClient {
                         System.out.print("ID da Consulta a ser removida: ");
                         consultaId = scanner.nextInt();
 
-                        server.cancelarConsulta(consultaId);
-                        System.out.println("Consulta removida com sucesso.");
+                        respostaServidor = server.cancelarConsulta(consultaId);
+                        System.out.println(respostaServidor);
                         break;
 
                     default:
