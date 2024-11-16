@@ -207,7 +207,7 @@ public class ConsultationService {
         
 
         //-------------------------------Verificar se a clinica recebida existe---------------------------------------------------------//
-        int clinicaId = -1;
+       int clinicaId = -1;
         String checkclinicaSql = "SELECT clinic_id FROM clinics WHERE name = ?";
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkclinicaSql)){
             stmt.setString(1, novaclinica);
@@ -223,7 +223,7 @@ public class ConsultationService {
         }catch(SQLException e){
             e.printStackTrace();
             return "Erro ao verificar a clinica fornecida";
-        }
+        } 
 
         //-----------------------------Verificar se a especialidade recebida existe-------------------------------------------------//
 
@@ -337,9 +337,51 @@ public class ConsultationService {
             System.out.println("consultas encontradas para "+ userID);
             
             while(resultado.next()){
+
+                String clinicaId  = resultado.getString("clinic_id");
+                String especialidadeId = resultado.getString("specialty_id");
+
+                String clinica= "";
+                String checkclinicaSql = "SELECT name FROM clinics WHERE clinic_id = ?";
+            
+            
+                try(Connection conct1 = DatabaseConnection.getConnection(); PreparedStatement stmt1 = conct1.prepareStatement(checkclinicaSql)){
+                    stmt1.setString(1, clinicaId);
+
+                    ResultSet resultSet = stmt1.executeQuery();
+                    if(resultSet.next()){
+                        clinica = resultSet.getString("name");
+                    }
+
+
+                }catch(SQLException e){
+                    e.printStackTrace();
+                }    
+
+
+
+
+                String especialidade= "";
+                String checkespecialidadeSql = "SELECT name FROM specialties WHERE specialty_id = ?";
+
+                try(Connection conct2 = DatabaseConnection.getConnection(); PreparedStatement stmt2 = conct2.prepareStatement(checkespecialidadeSql)){
+                    stmt2.setString(1, especialidadeId);
+
+                    ResultSet resultSet = stmt2.executeQuery();
+                    if(resultSet.next()){
+                        especialidade = resultSet.getString("name");
+                    }
+
+
+                }catch(SQLException e){
+                    e.printStackTrace();
+                }  
+
+
+
                 String consulta = "ID: " + resultado.getInt("consultation_id") +
-                                      ", Clinic: " + resultado.getString("clinic_name") +
-                                      ", Specialty: " + resultado.getString("specialty") +
+                                      ", Clinic: " + clinica +
+                                      ", Specialty: " + especialidade +
                                       ", Date & Time: " + resultado.getString("date_time");
 
                 consultas.add(consulta);

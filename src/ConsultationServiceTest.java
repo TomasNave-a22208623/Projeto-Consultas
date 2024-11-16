@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -52,6 +52,16 @@ public class ConsultationServiceTest {
 
     }
 
+
+
+    @Test
+    public void listarConsultas(){
+        
+
+        List<String> lista = ConsultationService.listarConsultas(1);
+        assertEquals("aaaa",lista);
+        
+    }
 
 
     @Test 
