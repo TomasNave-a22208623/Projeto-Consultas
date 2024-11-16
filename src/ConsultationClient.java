@@ -28,13 +28,13 @@ public class ConsultationClient {
                 switch (option) {
                     case 1:
                         
-                        System.out.print("Novo nome da Clinica: ");
+                        System.out.print("Nome da Clinica: ");
                         String novaClinica = scanner.nextLine();
 
-                        System.out.print("Nova Especialidade: ");
+                        System.out.print("Especialidade: ");
                         String novaEspecialidade = scanner.nextLine();
 
-                        System.out.print("Nova Data e Hora (YYYY-MM-DD HH:MM): ");
+                        System.out.print("Data e Hora (YYYY-MM-DD HH:MM): ");
                         String novaData = scanner.nextLine();
                         
                         respostaServidor = server.reservarConsulta(novaClinica, novaEspecialidade, novaData, userId);

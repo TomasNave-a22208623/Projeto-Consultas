@@ -45,7 +45,7 @@ public class ConsultationService {
 
             ResultSet resultSet = stmt.executeQuery();
             if(resultSet.next()){
-                clinicaId = resultSet.getInt("specialty_id");
+                especialidadeId = resultSet.getInt("specialty_id");
             }else{
                 return "A especialidade fornecido nao existe";
             }
