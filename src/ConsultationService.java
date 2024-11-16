@@ -14,15 +14,7 @@ public class ConsultationService {
 
     public String reservarConsulta(String clinica , String especialidade , String dataHora , int userId ){
         
-        //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
-        
-        List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00");
 
-        String hora = dataHora.split(" ")[1];
-
-        if(!horasValidos.contains(hora)){
-            return "O horario fornecido invalido";
-        }
         
 
         //-------------------------------Verificar se a clinica recebida existe---------------------------------------------------------//
@@ -35,13 +27,13 @@ public class ConsultationService {
             if(resultSet.next()){
                 clinicaId = resultSet.getInt("clinic_id");
             }else{
-                return "A clinica fornecido nao existe";
+                return "A clinica fornecida nao existe";
             }
 
 
         }catch(SQLException e){
             e.printStackTrace();
-            return "Erro ao verificar a clínica fornecida";
+            return "Erro ao verificar a clinica fornecida";
         }
 
         //-----------------------------Verificar se a especialidade recebida existe-------------------------------------------------//
@@ -78,8 +70,18 @@ public class ConsultationService {
 
         }catch(SQLException e){
             e.printStackTrace();
-            return "Erro ao verificar a disponibilidade da especialidade na clínica";
+            return "Erro ao verificar a disponibilidade da especialidade na clinica";
         }
+
+        //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
+        
+                List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
+
+                String hora = dataHora.split(" ")[1];
+        
+                if(!horasValidos.contains(hora)){
+                    return "O horario fornecido invalido";
+                }
 
         //------------------Verificar se existe um medico disponivel para o horario recebido----------------------------------//
 
@@ -116,12 +118,12 @@ public class ConsultationService {
                     return "Consulta marcada com sucesso";
                 }
             } else {
-                return "Nao ha medicos disponíveis para a especialidade selecionada na data e hora especificadas";
+                return "Nao ha medicos disponiveis para a especialidade selecionada na data e hora especificadas";
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Erro ao verificar disponibilidade de médicos";
+            return "Erro ao verificar disponibilidade de medicos";
         }
 
     }
@@ -132,14 +134,14 @@ public class ConsultationService {
 
 
 
-    public String cancelarConsulta(int consultaId){
+    public String cancelarConsulta(int consultationId){
 
         //-----------------------------Verificar se a consullta existe---------------------------------//
 
         String checkConsultaIDSql = "SELECT FROM consultations WHERE  consultation_id = ?";
         
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaIDSql)){
-            stmt.setInt(1, consultaId);
+            stmt.setInt(1, consultationId);
 
             ResultSet resultSet = stmt.executeQuery();
             if(!resultSet.next()){
@@ -157,7 +159,7 @@ public class ConsultationService {
         String deleteConsultaSql = "DELETE FROM consultations WHERE  consultation_id = ?";
         
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(deleteConsultaSql)){
-            stmt.setInt(1, consultaId);
+            stmt.setInt(1, consultationId);
             stmt.executeUpdate();
 
             System.out.println("Consulta removida com sucesso!!");
@@ -200,15 +202,7 @@ public class ConsultationService {
             return "Erro ao verificar a consulta fornecida";
         }
 
-        //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
-        
-        List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00");
 
-        String hora = novaData.split(" ")[1];
-
-        if(!horasValidos.contains(hora)){
-            return "O horario fornecido invalido";
-        }
         
         
 
@@ -222,13 +216,13 @@ public class ConsultationService {
             if(resultSet.next()){
                 clinicaId = resultSet.getInt("clinic_id");
             }else{
-                return "A clinica fornecido nao existe";
+                return "A clinica fornecida nao existe";
             }
 
 
         }catch(SQLException e){
             e.printStackTrace();
-            return "Erro ao verificar a clínica fornecida";
+            return "Erro ao verificar a clinica fornecida";
         }
 
         //-----------------------------Verificar se a especialidade recebida existe-------------------------------------------------//
@@ -242,7 +236,7 @@ public class ConsultationService {
             if(resultSet.next()){
                 clinicaId = resultSet.getInt("specialty_id");
             }else{
-                return "A especialidade fornecido nao existe";
+                return "A especialidade fornecida nao existe";
             }
 
 
@@ -265,8 +259,19 @@ public class ConsultationService {
 
         }catch(SQLException e){
             e.printStackTrace();
-            return "Erro ao verificar a disponibilidade da especialidade na clínica";
+            return "Erro ao verificar a disponibilidade da especialidade na clinica";
         }
+
+
+        //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
+        
+                List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
+
+                String hora = novaData.split(" ")[1];
+        
+                if(!horasValidos.contains(hora)){
+                    return "Horario fornecido invalido";
+                }
 
         //------------------Verificar se existe um medico disponivel para o horario recebido----------------------------------//
 
@@ -302,12 +307,12 @@ public class ConsultationService {
                     return "Consulta atualizada com sucesso";
                 }
             } else {
-                return "Nao ha medicos disponíveis para a especialidade selecionada na data e hora especificadas";
+                return "Nao ha medicos disponiveis para a especialidade selecionada na data e hora especificadas";
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Erro ao verificar disponibilidade de médicos";
+            return "Erro ao verificar disponibilidade de medicos";
         }
 
     }
