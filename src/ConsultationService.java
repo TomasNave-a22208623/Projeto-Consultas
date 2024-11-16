@@ -182,7 +182,24 @@ public class ConsultationService {
 
     public void updateConsulta(int consultationId , String novaclinica , String novaEspecialidade , String novaData){
 
+        //--------------------------------------wfgewfwf2f----------------------------------------------------------------//
 
+        String deleteConsultaSql = "DELETE FROM consultations WHERE  consultation_id = ?";
+        
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(deleteConsultaSql)){
+            stmt.setInt(1, consultationId);
+            stmt.executeUpdate();
+
+            System.out.println("Consulta removida com sucesso!!");
+
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            
+        }
+
+        
+        //---------------------------------------------------------------------------------------------------------------//
 
         String sql = "UPDATE consultations SET clinic_name = ? , specialty = ? , date_time = ? WHERE  consultation_id = ?";
         
