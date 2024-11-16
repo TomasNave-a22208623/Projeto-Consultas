@@ -12,8 +12,8 @@ public class ConsultationServerImpl extends UnicastRemoteObject implements Consu
     }
 
     @Override
-    public void reservarConsulta(String clinicName, String specialty, String dateTime, int userId) throws RemoteException {
-        consultationService.reservarConsulta(clinicName, specialty, dateTime, userId);
+    public String reservarConsulta(String clinicName, String specialty, String dateTime, int userId) throws RemoteException {
+        return consultationService.reservarConsulta(clinicName, specialty, dateTime, userId);
     }
 
     @Override

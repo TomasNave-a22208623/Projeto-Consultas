@@ -37,8 +37,8 @@ public class ConsultationClient {
                         System.out.print("Nova Data e Hora (YYYY-MM-DD HH:MM): ");
                         String novaData = scanner.nextLine();
                         
-                        server.reservarConsulta(novaClinica, novaEspecialidade, novaData, userId);
-                        System.out.println("Consulta adicionada com sucesso.");
+                        String respostaServidor = server.reservarConsulta(novaClinica, novaEspecialidade, novaData, userId);
+                        System.out.println(respostaServidor);
                         break;
 
                     case 2:
