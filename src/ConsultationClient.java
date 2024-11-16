@@ -45,6 +45,10 @@ public class ConsultationClient {
                         
                         List<String> consultas = server.listarConsultas(userId);
                         System.out.println("\n---| Consultas |---");
+                        
+                        if(consultas.size()==0){
+                            System.out.println("Nao tem nenhuma consulta agendada");
+                        }
 
                         for(String consulta : consultas){
                             System.out.println(consulta);
@@ -64,8 +68,8 @@ public class ConsultationClient {
                         System.out.print("Nova Data e Hora (YYYY-MM-DD HH:MM): ");
                         novaData = scanner.nextLine();
 
-                        server.updateConsulta(consultaId, novaClinica, novaEspecialidade, novaData);
-                        System.out.println("Consulta atualizada com sucesso.");
+                        respostaServidor = server.updateConsulta(consultaId, novaClinica, novaEspecialidade, novaData , userId);
+                        System.out.println(respostaServidor);
                         break;
 
                     case 4:
