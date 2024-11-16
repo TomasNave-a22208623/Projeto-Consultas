@@ -63,6 +63,21 @@ public class ConsultationServiceTest {
         
     }
 
+    @Test
+    public void cancelarConsulta(){
+        
+        // ------------------------- Teste ID invalido --------------------------------------------------
+        String resultIdNaoEncontrado = ConsultationService.cancelarConsulta(20);
+        assertEquals("A consulta fornecida nao existe",resultIdNaoEncontrado);
+
+
+        // ------------------------- Teste ID invalido --------------------------------------------------
+        String resultIdValido = ConsultationService.cancelarConsulta(10);
+        assertEquals("A consulta foi desmarcada com sucesso",resultIdValido);
+
+        
+    }
+
 
     @Test 
     public void UpdateConsulta(){

@@ -59,13 +59,13 @@ public class ConsultationClient {
                         System.out.print("ID da Consulta a ser atualizada: ");
                         int consultaId = scanner.nextInt();
                         scanner.nextLine(); 
-                        System.out.print("Novo nome da Clinica: ");
+                        System.out.print("Clinica: ");
                         novaClinica = scanner.nextLine();
 
-                        System.out.print("Nova Especialidade: ");
+                        System.out.print("Especialidade: ");
                         novaEspecialidade = scanner.nextLine();
 
-                        System.out.print("Nova Data e Hora (YYYY-MM-DD HH:MM): ");
+                        System.out.print("Data e Hora (YYYY-MM-DD HH:MM): ");
                         novaData = scanner.nextLine();
 
                         respostaServidor = server.updateConsulta(consultaId, novaClinica, novaEspecialidade, novaData , userId);

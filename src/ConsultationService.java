@@ -138,7 +138,7 @@ public class ConsultationService {
 
         //-----------------------------Verificar se a consullta existe---------------------------------//
 
-        String checkConsultaIDSql = "SELECT FROM consultations WHERE  consultation_id = ?";
+        String checkConsultaIDSql = "SELECT * FROM consultations WHERE  consultation_id = ?";
         
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaIDSql)){
             stmt.setInt(1, consultationId);
@@ -162,7 +162,7 @@ public class ConsultationService {
             stmt.setInt(1, consultationId);
             stmt.executeUpdate();
 
-            System.out.println("Consulta removida com sucesso!!");
+            return "A consulta foi desmarcada com sucesso";
 
 
         }catch(SQLException e){
@@ -170,7 +170,6 @@ public class ConsultationService {
             return "Erro ao remover a consulta";
         }
 
-        return "Erro inesperado ao remover a consulta";
     }
 
 
