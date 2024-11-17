@@ -83,7 +83,7 @@ public class ConsultationServiceTest {
     public void UpdateConsulta(){
 
         // ------------------------- Teste Hora Invalida --------------------------------------------------
-        String resultHoraInv = ConsultationService.updateConsulta(2,"2024-11-16 07:00", 1);
+        String resultHoraInv = ConsultationService.updateConsulta(8,"2024-11-16 11:00", 1);
         assertEquals("Horario fornecido invalido",resultHoraInv);
 
 

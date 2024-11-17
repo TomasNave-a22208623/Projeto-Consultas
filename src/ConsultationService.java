@@ -189,6 +189,7 @@ public class ConsultationService {
         String checkConsultaIDSql = "SELECT * FROM consultations WHERE  consultation_id = ?";
         int especialidade = -1;
         int clinica = -1;
+        String dataAntiga = "";
 
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaIDSql)){
             stmt.setInt(1, consultaId);
@@ -199,25 +200,29 @@ public class ConsultationService {
             }else{
                 especialidade = resultSet.getInt("specialty_id");
                 clinica = resultSet.getInt("clinic_id");
+                dataAntiga = resultSet.getString("date_time");
             }
 
         }catch(SQLException e){
             e.printStackTrace();
             return "Erro ao verificar a consulta fornecida";
         }
-
-
-        
+        //-------------------------------Verificar se está a marcar para a mesma data--------------------------------------------------//
+        String novaDataComSegundos = novaData+":00";
+        if(novaDataComSegundos.equals(dataAntiga)){
+            return "A data fornecida é igual á anteriormente agendada";
+        }
 
         //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
         
-                List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
+        List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
 
-                String hora = novaData.split(" ")[1];
+        String hora = novaData.split(" ")[1];
         
-                if(!horasValidos.contains(hora)){
-                    return "Horario fornecido invalido";
-                }
+        if(!horasValidos.contains(hora)){
+            return "Horario fornecido invalido";
+        }
+
 
         //------------------Verificar se existe um medico disponivel para o horario recebido----------------------------------//
 
