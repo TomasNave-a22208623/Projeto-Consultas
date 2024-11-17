@@ -181,19 +181,24 @@ public class ConsultationService {
 
 
 
-    public String updateConsulta(int consultaId , String novaclinica , String novaEspecialidade , String novaData , int userId){
+    public String updateConsulta(int consultaId ,String novaData , int userId){
 
         
         //-----------------------------Verificar se a consulta existe---------------------------------------------------//
 
-        String checkConsultaIDSql = "SELECT FROM consultations WHERE  consultation_id = ?";
-        
+        String checkConsultaIDSql = "SELECT * FROM consultations WHERE  consultation_id = ?";
+        int especialidade = -1;
+        int clinica = -1;
+
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaIDSql)){
             stmt.setInt(1, consultaId);
 
             ResultSet resultSet = stmt.executeQuery();
             if(!resultSet.next()){
                 return "A consulta fornecida nao existe";
+            }else{
+                especialidade = resultSet.getInt("specialty_id");
+                clinica = resultSet.getInt("clinic_id");
             }
 
         }catch(SQLException e){
@@ -203,64 +208,6 @@ public class ConsultationService {
 
 
         
-        
-
-        //-------------------------------Verificar se a clinica recebida existe---------------------------------------------------------//
-       int clinicaId = -1;
-        String checkclinicaSql = "SELECT clinic_id FROM clinics WHERE name = ?";
-        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkclinicaSql)){
-            stmt.setString(1, novaclinica);
-
-            ResultSet resultSet = stmt.executeQuery();
-            if(resultSet.next()){
-                clinicaId = resultSet.getInt("clinic_id");
-            }else{
-                return "A clinica fornecida nao existe";
-            }
-
-
-        }catch(SQLException e){
-            e.printStackTrace();
-            return "Erro ao verificar a clinica fornecida";
-        } 
-
-        //-----------------------------Verificar se a especialidade recebida existe-------------------------------------------------//
-
-        int especialidadeId = -1;
-        String checkEspecialidadeSql = "SELECT specialty_id FROM specialties WHERE name = ?";
-        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkEspecialidadeSql)){
-            stmt.setString(1, novaEspecialidade);
-
-            ResultSet resultSet = stmt.executeQuery();
-            if(resultSet.next()){
-                clinicaId = resultSet.getInt("specialty_id");
-            }else{
-                return "A especialidade fornecida nao existe";
-            }
-
-
-        }catch(SQLException e){
-            e.printStackTrace();
-            return "Erro ao verificar a especialidade fornecida";
-        }
-
-        //------------------Verificar se a especialidade recebida está disponivel na clinica recebida---------------------------//
-
-        String checkEspecClinicaSql = "SELECT COUNT(*) FROM doctors WHERE clinic_id = ? AND specialty_id = ?";
-        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkEspecClinicaSql)){
-            stmt.setInt(1, clinicaId);
-            stmt.setInt(2, especialidadeId);
-
-            ResultSet resultSet = stmt.executeQuery();
-            if(resultSet.next() && resultSet.getInt(1) == 0){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                return "A especialidade fornecida nao esta disponivel na clinica fornecida";
-            }
-
-        }catch(SQLException e){
-            e.printStackTrace();
-            return "Erro ao verificar a disponibilidade da especialidade na clinica";
-        }
-
 
         //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
         
@@ -280,12 +227,14 @@ public class ConsultationService {
         "WHERE d.specialty_id = ? AND d.clinic_id = ? AND c.consultation_id IS NULL " +
         "LIMIT 1";
 
+
+
         try (Connection conct = DatabaseConnection.getConnection(); 
             PreparedStatement stmt = conct.prepareStatement(checkDisponiblidadeSql)) {
 
             stmt.setString(1, novaData);
-            stmt.setInt(2, especialidadeId); 
-            stmt.setInt(3, clinicaId);
+            stmt.setInt(2, especialidade); 
+            stmt.setInt(3, clinica);
 
             ResultSet resultSet = stmt.executeQuery();
 
@@ -293,14 +242,15 @@ public class ConsultationService {
                 int doutorDisponivelId = resultSet.getInt("doctor_id");
 
             //-------Se a query retornar alguma linha quer dizer que existe um medico sem consulta a essa hora-----------------//
-                String updateConsultaSql = "UPDATE consultations SET clinic_name = ? , specialty = ? , date_time = ? WHERE  consultation_id = ?";
+                String updateConsultaSql = "UPDATE consultations SET clinic_id = ? , specialty_id = ? , date_time = ? ,user_id = ? , doctor_id = ? WHERE  consultation_id = ?";
 
                 try (PreparedStatement insertStmt = conct.prepareStatement(updateConsultaSql)) {
-                    insertStmt.setInt(1, clinicaId);  
-                    insertStmt.setInt(2, especialidadeId); 
+                    insertStmt.setInt(1, clinica);  
+                    insertStmt.setInt(2, especialidade); 
                     insertStmt.setString(3, novaData);
                     insertStmt.setInt(4, userId);
                     insertStmt.setInt(5, doutorDisponivelId);
+                    insertStmt.setInt(6, consultaId);
                     insertStmt.executeUpdate();
 
                     return "Consulta atualizada com sucesso";
