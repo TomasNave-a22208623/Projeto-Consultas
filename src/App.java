@@ -7,7 +7,7 @@ public class App {
         
         ConsultationServerImpl consult = new ConsultationServerImpl();
 
-        List<String> consultations = consult.listarConsultas(1);
+        List<String> consultations = consult.listarConsultas();
             consultations.forEach(System.out::println);
         
     }

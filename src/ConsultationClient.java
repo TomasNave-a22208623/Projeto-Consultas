@@ -5,79 +5,150 @@ import java.util.Scanner;
 public class ConsultationClient {
     public static void main(String[] args) {
         try {
-            String serverURL = "rmi://" + args[0] + "/ConsultationServer";
+            String serverURL = "rmi://" + "192.168.56.101" + "/ConsultationServer";
             ConsultationServerIntf server = (ConsultationServerIntf) Naming.lookup(serverURL);
 
             Scanner scanner = new Scanner(System.in);
-            boolean exit = false;
+            boolean isRunning = true; // Controle geral do programa
 
-            while (!exit) {
-                System.out.println("\n--- Menu de Consulta ---");
-                System.out.println("1. Adicionar uma consulta");
-                System.out.println("2. Listar todas as consultas");
-                System.out.println("3. Atualizar uma consulta");
-                System.out.println("4. Remover uma consulta");
-                System.out.print("Escolha uma opcao: ");
-                
-                int option = scanner.nextInt();
-                scanner.nextLine();
+            UserService userService = new UserService();
 
-                int userId = 1;
-                String respostaServidor = "";
+            System.out.println("Bem-vindo ao Sistema de Consultas!");
 
-                switch (option) {
-                    case 1:
-                        
-                        System.out.print("Nome da Clinica: ");
-                        String novaClinica = scanner.nextLine();
+            while (isRunning) { 
+                boolean isLoggedIn = false;
+                int userId = -1;
 
-                        System.out.print("Especialidade: ");
-                        String novaEspecialidade = scanner.nextLine();
+                // Menu inicial para login ou registo
+                while (!isLoggedIn && isRunning) {
+                    System.out.println("\n--- Menu Inicial ---");
+                    System.out.println("1. Fazer Login");
+                    System.out.println("2. Registar Conta");
+                    System.out.println("3. Sair");
+                    System.out.print("Escolha uma opção: ");
+                    String choice = scanner.next();
+                    scanner.nextLine(); 
 
-                        System.out.print("Data e Hora (YYYY-MM-DD HH:MM): ");
-                        String novaData = scanner.nextLine();
-                        
-                        respostaServidor = server.reservarConsulta(novaClinica, novaEspecialidade, novaData, userId);
-                        System.out.println(respostaServidor);
-                        break;
+                    switch (choice) {
+                        case "1":
+                            // Login
+                            System.out.print("Email: ");
+                            String username = scanner.nextLine();
+                            System.out.print("Password: ");
+                            String password = scanner.nextLine();
 
-                    case 2:
-                        
-                        List<String> consultas = server.listarConsultas(userId);
-                        System.out.println("\n---| Consultas |---");
-                        
-                        if(consultas.size()==0){
-                            System.out.println("Nao tem nenhuma consulta agendada");
-                        }
+                            userId = userService.loginUser(username, password);
 
-                        for(String consulta : consultas){
-                            System.out.println(consulta);
-                        }
-                        break;
+                            if (userId != -1) {
+                                System.out.println("Login realizado com sucesso!");
+                                System.out.println("Id: " + userId);
+                                server.setUserSession(userId);
+                                isLoggedIn = true;
+                            } else {
+                                System.out.println("Credenciais inválidas. Tente novamente.");
+                            }
+                            break;
 
-                    case 3:
-                        System.out.print("ID da Consulta a ser atualizada: ");
-                        int consultaId = scanner.nextInt();
-                        scanner.nextLine(); 
+                        case "2":
+                            // Registo
+                            System.out.print("Email: ");
+                            String newUsername = scanner.nextLine();
+                            
+                            System.out.print("Password: ");
+                            String newPassword = scanner.nextLine();
 
-                        System.out.print("Nova Data e Hora (YYYY-MM-DD HH:MM): ");
-                        novaData = scanner.nextLine();
+                            String registrationResult = userService.ResgistarUser(newUsername, newPassword);
+                            System.out.println(registrationResult);
+                            break;
 
-                        respostaServidor = server.updateConsulta(consultaId, novaData , userId);
-                        System.out.println(respostaServidor);
-                        break;
+                        case "3":
+                            // Sair do programa
+                            System.out.println("A encerrar o programa...");
+                            isRunning = false;
+                            break;
 
-                    case 4:
-                        System.out.print("ID da Consulta a ser removida: ");
-                        consultaId = scanner.nextInt();
+                        default:
+                            System.out.println("Opção inválida. Por favor, tente novamente.");
+                            break;
+                    }
+                }
 
-                        respostaServidor = server.cancelarConsulta(consultaId);
-                        System.out.println(respostaServidor);
-                        break;
+                // Menu principal, se o usuário estiver logado
+                while (isLoggedIn && isRunning) {
+                    System.out.println("\n--- Menu de Consultas ---");
+                    System.out.println("1. Marcar uma consulta");
+                    System.out.println("2. Listar todas as consultas");
+                    System.out.println("3. Remarcar uma consulta");
+                    System.out.println("4. Remover uma consulta");
+                    System.out.println("5. Sair");
+                    System.out.print("Escolha uma opção: ");
 
-                    default:
-                        System.out.println("Opcao invalida. Por favor, tente novamente.");
-                        break;
+                    String option = scanner.next();
+                    scanner.nextLine();
+                    String respostaServidor = "";
+
+                    switch (option) {
+                        case "1":
+                            // Marcar consulta
+                            System.out.print("Nome da Clínica: ");
+                            String novaClinica = scanner.nextLine();
+
+                            System.out.print("Especialidade: ");
+                            String novaEspecialidade = scanner.nextLine();
+
+                            System.out.print("Data e Hora (YYYY-MM-DD HH:MM): ");
+                            String novaData = scanner.nextLine();
+
+                            respostaServidor = server.reservarConsulta(novaClinica, novaEspecialidade, novaData);
+                            System.out.println(respostaServidor);
+                            break;
+
+                        case "2":
+                            // Listar consultas
+                            List<String> consultas = server.listarConsultas();
+                            System.out.println("\n---| Consultas |---");
+
+                            if (consultas.isEmpty()) {
+                                System.out.println("Não tem nenhuma consulta agendada.");
+                            }
+
+                            for (String consulta : consultas) {
+                                System.out.println(consulta);
+                            }
+                            break;
+
+                        case "3":
+                            // Remarcar consulta
+                            System.out.print("ID da Consulta a ser atualizada: ");
+                            int consultaId = scanner.nextInt();
+                            scanner.nextLine(); // Consumir quebra de linha
+
+                            System.out.print("Nova Data e Hora (YYYY-MM-DD HH:MM): ");
+                            String novaDataAtualizada = scanner.nextLine();
+
+                            respostaServidor = server.updateConsulta(consultaId, novaDataAtualizada);
+                            System.out.println(respostaServidor);
+                            break;
+
+                        case "4":
+                            // Desmarcar consulta
+                            System.out.print("ID da Consulta a ser removida: ");
+                            int consultaRemoverId = scanner.nextInt();
+
+                            respostaServidor = server.cancelarConsulta(consultaRemoverId);
+                            System.out.println(respostaServidor);
+                            break;
+
+                        case "5":
+                            // Voltar ao menu inicial
+                            System.out.println("Terminando sessão e voltando ao menu inicial...");
+                            isLoggedIn = false; // Termina o loop do menu principal
+                            break;
+
+                        default:
+                            System.out.println("Opção inválida. Por favor, tente novamente.");
+                            break;
+                    }
                 }
             }
 

@@ -5,16 +5,30 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class ConsultationService {
+
+    private int currentUserId;
+
+
+    public void setUser(int userId) {
+        this.currentUserId = userId;
+    }
 
     //------------------------------------------------------------------------------------------------------------------------------------
     //------------------------------------------------------(Reservar)---------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------------------------------------------
 
-    public String reservarConsulta(String clinica , String especialidade , String dataHora , int userId ){
+    public String reservarConsulta(String clinica , String especialidade , String dataHora){
         
-
         
 
         //-------------------------------Verificar se a clinica recebida existe---------------------------------------------------------//
@@ -73,15 +87,78 @@ public class ConsultationService {
             return "Erro ao verificar a disponibilidade da especialidade na clinica";
         }
 
+        //-------------------------------Verificar se a data tem formato valido-----------------------------------------------------------//
+        
+        
+        try {
+
+            String data = dataHora.split(" ")[0];
+
+            String partes[] = data.split("-");
+
+
+
+            // Formato esperado para a data e hora
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+            // Tentar fazer o parse para verificar o formato
+            LocalDateTime dataConsulta = LocalDateTime.parse(dataHora, formatter);
+
+            // Verificar se a data é válida no calendário (mês, dia)
+            try { 
+                int ano = dataConsulta.getYear();
+                Month mes = dataConsulta.getMonth();
+                int dia = Integer.parseInt(partes[2]);
+            
+                LocalDate.of(ano, mes, dia );
+            } catch (DateTimeException e) {
+                return "A data fornecida não é válida. Verifique o número de dias do mês.";
+            }
+
+            // Obter a data e hora atuais no fuso horário de Lisboa
+            ZonedDateTime agora = ZonedDateTime.now(ZoneId.of("Europe/Lisbon"));
+
+            // Converter a data e hora da consulta para o fuso horário de Lisboa
+            ZonedDateTime dataConsultaZoned = dataConsulta.atZone(ZoneId.of("Europe/Lisbon"));
+
+            // Verificar se a data está no futuro
+            if (!dataConsultaZoned.isAfter(agora)) {
+                return "A data da consulta deve ser posterior à data e hora atuais.";
+            }
+
+        } catch (DateTimeParseException e) {
+            // Erro ao fazer o parse, formato inválido
+            return "Formato de data e hora inválido. Exemplo correto: (YYYY-MM-DD HH:MM)";
+        }
+        
+
+
         //-------------------------------Verificar se o horario é valido------------------------------------------------------------//
         
-                List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
+            List<String> horasValidos = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
 
-                String hora = dataHora.split(" ")[1];
+            String hora = dataHora.split(" ")[1];
         
-                if(!horasValidos.contains(hora)){
+            if(!horasValidos.contains(hora)){
                     return "O horario fornecido invalido";
-                }
+            }
+
+        //------------------Verificar se o utilizador já tem marcada consulta para essa Hora---------------------------//
+
+        String checkHoraConsulta = "SELECT * FROM consultations WHERE user_id = ? AND date_time = ?";
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkHoraConsulta)){
+            stmt.setInt(1, this.currentUserId);
+            stmt.setString(2, dataHora);
+
+            ResultSet resultSet = stmt.executeQuery();
+            if(resultSet.next()){ 
+                return "Você já tem uma consulta marcada para esta data";
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return "Erro ao verificar se o utilizador já tem consulta para esta data";
+        }      
 
         //------------------Verificar se existe um medico disponivel para o horario recebido----------------------------------//
 
@@ -111,7 +188,7 @@ public class ConsultationService {
                     insertStmt.setInt(1, clinicaId);  
                     insertStmt.setInt(2, especialidadeId); 
                     insertStmt.setString(3, dataHora);
-                    insertStmt.setInt(4, userId);
+                    insertStmt.setInt(4, this.currentUserId);
                     insertStmt.setInt(5, doutorDisponivelId);
                     insertStmt.executeUpdate();
 
@@ -123,6 +200,11 @@ public class ConsultationService {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("Dados fornecidos: ");
+            System.out.println("clinicaId: " + clinicaId);
+            System.out.println("especialidadeId: " + especialidadeId);
+            System.out.println("dataHora: " + dataHora);
+            System.out.println("userID: " + this.currentUserId);
             return "Erro ao verificar disponibilidade de medicos";
         }
 
@@ -154,6 +236,27 @@ public class ConsultationService {
         }
 
 
+        //-----------------------------Verificar se a consullta pertence ao utilizador---------------------------------//
+
+
+        String checkConsultaUserSql = "SELECT * FROM consultations WHERE  consultation_id = ? AND user_id = ?";
+        
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaUserSql)){
+            stmt.setInt(1, consultationId);
+            stmt.setInt(2,this.currentUserId);
+
+            ResultSet resultSet = stmt.executeQuery();
+            if(!resultSet.next()){
+                return "A consulta fornecida não lhe pertençe";
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return "Erro ao verificar a consulta fornecida";
+        }
+
+
+
         //----------------------------------Delete Consulta--------------------------------------------//
 
         String deleteConsultaSql = "DELETE FROM consultations WHERE  consultation_id = ?";
@@ -181,7 +284,7 @@ public class ConsultationService {
 
 
 
-    public String updateConsulta(int consultaId ,String novaData , int userId){
+    public String updateConsulta(int consultaId ,String novaData ){
 
         
         //-----------------------------Verificar se a consulta existe---------------------------------------------------//
@@ -223,6 +326,24 @@ public class ConsultationService {
             return "Horario fornecido invalido";
         }
 
+        //------------------Verificar se o utilizador já tem marcada consulta para essa Hora---------------------------//
+
+        String checkHoraConsulta = "SELECT * FROM consultations WHERE user_id = ? AND date_time = ?";
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkHoraConsulta)){
+            stmt.setInt(1, this.currentUserId);
+            stmt.setString(2,novaData);
+
+            ResultSet resultSet = stmt.executeQuery();
+            if(resultSet.next()){ 
+                return "Você já tem uma consulta marcada para esta data";
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return "Erro ao verificar se o utilizador já tem consulta para esta data";
+        }      
+
+
 
         //------------------Verificar se existe um medico disponivel para o horario recebido----------------------------------//
 
@@ -253,7 +374,7 @@ public class ConsultationService {
                     insertStmt.setInt(1, clinica);  
                     insertStmt.setInt(2, especialidade); 
                     insertStmt.setString(3, novaData);
-                    insertStmt.setInt(4, userId);
+                    insertStmt.setInt(4, this.currentUserId);
                     insertStmt.setInt(5, doutorDisponivelId);
                     insertStmt.setInt(6, consultaId);
                     insertStmt.executeUpdate();
@@ -277,18 +398,18 @@ public class ConsultationService {
 
 
 
-    public List<String> listarConsultas(int userID){
+    public List<String> listarConsultas(){
 
         String sql = "SELECT * FROM consultations  WHERE user_id = ?";
         List<String> consultas = new ArrayList<>();
         
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(sql)){
             
-            stmt.setInt(1, userID);
+            stmt.setInt(1, this.currentUserId);
             
             ResultSet resultado = stmt.executeQuery();
 
-            System.out.println("consultas encontradas para "+ userID);
+            System.out.println("consultas encontradas para "+ this.currentUserId);
             
             while(resultado.next()){
 

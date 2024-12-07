@@ -12,18 +12,24 @@ public class ConsultationServerImpl extends UnicastRemoteObject implements Consu
     }
 
     @Override
-    public String reservarConsulta(String clinicName, String specialty, String dateTime, int userId) throws RemoteException {
-        return consultationService.reservarConsulta(clinicName, specialty, dateTime, userId);
+    public void setUserSession(int userId) throws RemoteException {
+        consultationService.setUser(userId);
+        System.out.println("Sessão do utilizador definida. ID: " + userId);
     }
 
     @Override
-    public List<String> listarConsultas(int userID) throws RemoteException {
-        return consultationService.listarConsultas(userID);
+    public String reservarConsulta(String clinicName, String specialty, String dateTime) throws RemoteException {
+        return consultationService.reservarConsulta(clinicName, specialty, dateTime);
     }
 
     @Override
-    public String updateConsulta(int consultaId ,String novaData , int userId) throws RemoteException {
-        return consultationService.updateConsulta(consultaId, novaData , userId);
+    public List<String> listarConsultas() throws RemoteException {
+        return consultationService.listarConsultas();
+    }
+
+    @Override
+    public String updateConsulta(int consultaId ,String novaData) throws RemoteException {
+        return consultationService.updateConsulta(consultaId, novaData);
     }
 
     @Override
