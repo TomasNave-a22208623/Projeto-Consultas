@@ -220,12 +220,15 @@ public class ConsultationService {
 
         //-----------------------------Verificar se a consullta existe---------------------------------//
 
+
+        System.out.println(consultationId);
         String checkConsultaIDSql = "SELECT * FROM consultations WHERE  consultation_id = ?";
         
         try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaIDSql)){
             stmt.setInt(1, consultationId);
 
             ResultSet resultSet = stmt.executeQuery();
+
             if(!resultSet.next()){
                 return "A consulta fornecida nao existe";
             }
@@ -247,7 +250,7 @@ public class ConsultationService {
 
             ResultSet resultSet = stmt.executeQuery();
             if(!resultSet.next()){
-                return "A consulta fornecida não lhe pertençe";
+                return "A consulta fornecida não lhe pertence";
             }
 
         }catch(SQLException e){
@@ -310,6 +313,75 @@ public class ConsultationService {
             e.printStackTrace();
             return "Erro ao verificar a consulta fornecida";
         }
+
+
+        //-----------------------------Verificar se a consullta pertence ao utilizador---------------------------------//
+
+
+        String checkConsultaUserSql = "SELECT * FROM consultations WHERE  consultation_id = ? AND user_id = ?";
+        
+        try(Connection conct = DatabaseConnection.getConnection(); PreparedStatement stmt = conct.prepareStatement(checkConsultaUserSql)){
+            stmt.setInt(1, consultaId);
+            stmt.setInt(2,this.currentUserId);
+
+            ResultSet resultSet = stmt.executeQuery();
+            if(!resultSet.next()){
+                return "A consulta fornecida não lhe pertence";
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return "Erro ao verificar a consulta fornecida";
+        }
+
+
+        //-------------------------------Verificar se a data tem formato valido-----------------------------------------------------------//
+        
+        
+        try {
+
+            String data = novaData.split(" ")[0];
+
+            String partes[] = data.split("-");
+
+
+
+            // Formato esperado para a data e hora
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+            // Tentar fazer o parse para verificar o formato
+            LocalDateTime dataConsulta = LocalDateTime.parse(novaData, formatter);
+
+            // Verificar se a data é válida no calendário (mês, dia)
+            try { 
+                int ano = dataConsulta.getYear();
+                Month mes = dataConsulta.getMonth();
+                int dia = Integer.parseInt(partes[2]);
+            
+                LocalDate.of(ano, mes, dia );
+            } catch (DateTimeException e) {
+                return "A data fornecida não é válida. Verifique o número de dias do mês.";
+            }
+
+            // Obter a data e hora atuais no fuso horário de Lisboa
+            ZonedDateTime agora = ZonedDateTime.now(ZoneId.of("Europe/Lisbon"));
+
+            // Converter a data e hora da consulta para o fuso horário de Lisboa
+            ZonedDateTime dataConsultaZoned = dataConsulta.atZone(ZoneId.of("Europe/Lisbon"));
+
+            // Verificar se a data está no futuro
+            if (!dataConsultaZoned.isAfter(agora)) {
+                return "A data da consulta deve ser posterior à data e hora atuais.";
+            }
+
+        } catch (DateTimeParseException e) {
+            // Erro ao fazer o parse, formato inválido
+            return "Formato de data e hora inválido. Exemplo correto: (YYYY-MM-DD HH:MM)";
+        }
+        
+
+
+
         //-------------------------------Verificar se está a marcar para a mesma data--------------------------------------------------//
         String novaDataComSegundos = novaData+":00";
         if(novaDataComSegundos.equals(dataAntiga)){
@@ -455,9 +527,9 @@ public class ConsultationService {
 
 
                 String consulta = "ID: " + resultado.getInt("consultation_id") +
-                                      ", Clinic: " + clinica +
-                                      ", Specialty: " + especialidade +
-                                      ", Date & Time: " + resultado.getString("date_time");
+                                      ", Clinica: " + clinica +
+                                      ", Especialidade: " + especialidade +
+                                      ", Data & Hora: " + resultado.getString("date_time");
 
                 consultas.add(consulta);
             }
