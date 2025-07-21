@@ -14,12 +14,26 @@ Projeto da unidade curricular de Computação Distribuída
 
 ## 🔎 Descrição do Projeto
 
-Este projeto foi desenvolvido no âmbito da unidade curricular de Computação Distribuída com o objetivo de aplicar os conceitos fundamentais de sistemas distribuídos através da criação de um sistema de marcação de consultas para clínicas médicas, com suporte para várias especialidades.
+Este projeto foi desenvolvido no contexto da unidade curricular de Computação Distribuída, com o objetivo de aprofundar a compreensão e a aplicação prática dos conceitos fundamentais associados a sistemas distribuídos. O foco principal consistiu em construir uma solução funcional e modular para a gestão de marcações de consultas médicas, considerando as necessidades de interoperabilidade, escalabilidade e robustez típicas de um sistema distribuído moderno.
 
-O sistema segue uma arquitetura cliente-servidor, dividida em dois componentes principais:
+O sistema foi concebido para permitir que os utilizadores finais possam realizar ações como registar-se na plataforma, autenticar-se, marcar, cancelar, listar e remarcar consultas em diferentes clínicas, cada uma com as suas especialidades. O projeto foi implementado em Java e segue uma arquitetura cliente-servidor distribuída, composta por duas grandes camadas: frontend e backend, que comunicam entre si através de Java RMI (Remote Method Invocation), um mecanismo que permite a execução de métodos remotos de forma transparente.
 
-- Frontend: Responsável pela interação com os utilizadores — registo, login, e operações sobre consultas. Expõe Web Services REST e SOAP.
-- Backend: Responsável pela gestão das marcações e lógica de negócio. Comunica com o frontend via Java RMI.
+### 🖥️ Frontend
+O frontend é responsável por toda a interação com os utilizadores finais. Foi desenvolvido num ambiente Windows, recorrendo à IDE Eclipse, e tem como funções principais:
+- Gestão de utilizadores: registo, login, e autenticação.
+- Exposição de Web Services: disponibiliza dois tipos de interfaces para consumo de serviços — REST e SOAP, ambos implementados sobre o servidor Apache Tomcat, com o suporte da biblioteca Apache CXF.
+- Ligação à base de dados MySQL: guarda toda a informação relacionada com os utilizadores da plataforma (registos, sessões, permissões).
+- Encaminhamento de pedidos ao backend: atua como intermediário entre os clientes e a lógica de negócio, redirecionando pedidos via RMI ao backend.
+
+A existência simultânea de serviços REST e SOAP proporciona flexibilidade e permite simular cenários de integração com diferentes tipos de clientes ou aplicações, refletindo a diversidade de tecnologias usada no mundo real.
+
+### 🛠️ Backend
+O backend, implementado numa máquina virtual Linux, é o núcleo lógico da aplicação. Foi desenvolvido com VS Code e serve exclusivamente para gerir as operações sobre as marcações de consultas. As principais responsabilidades deste componente incluem:
+- Persistência e gestão de marcações: operações CRUD sobre as reservas de consultas médicas.
+- Ligação à sua própria base de dados MySQL, onde são armazenadas todas as informações relativas às marcações.
+- Fornecimento de métodos RMI ao frontend, que atua como cliente remoto destes métodos.
+
+Esta separação clara entre frontend e backend permite escalar os componentes de forma independente, e também simula uma realidade empresarial onde diferentes partes do sistema estão distribuídas por diferentes servidores ou mesmo localizações geográficas.
 
 ## 🧱 Arquitetura da Solução
 
