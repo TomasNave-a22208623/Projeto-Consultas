@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ConsultationUtilityService" targetNamespace="http://default_package/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://default_package/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://default_package/" schemaLocation="consultationutility_schema1.xsd"/>
+</schema>
+  </wsdl:types>
+  <wsdl:message name="RegistarUser">
+    <wsdl:part name="parameters" element="tns:RegistarUser">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RegistarUserResponse">
+    <wsdl:part name="parameters" element="tns:RegistarUserResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listarConsultasResponse">
+    <wsdl:part name="parameters" element="tns:listarConsultasResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateConsulta">
+    <wsdl:part name="parameters" element="tns:updateConsulta">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelarConsulta">
+    <wsdl:part name="parameters" element="tns:cancelarConsulta">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listarConsultas">
+    <wsdl:part name="parameters" element="tns:listarConsultas">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateConsultaResponse">
+    <wsdl:part name="parameters" element="tns:updateConsultaResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="loginUserResponse">
+    <wsdl:part name="parameters" element="tns:loginUserResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelarConsultaResponse">
+    <wsdl:part name="parameters" element="tns:cancelarConsultaResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="loginUser">
+    <wsdl:part name="parameters" element="tns:loginUser">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="reservarConsulta">
+    <wsdl:part name="parameters" element="tns:reservarConsulta">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="reservarConsultaResponse">
+    <wsdl:part name="parameters" element="tns:reservarConsultaResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ConsultationUtility">
+    <wsdl:operation name="RegistarUser">
+      <wsdl:input name="RegistarUser" message="tns:RegistarUser">
+    </wsdl:input>
+      <wsdl:output name="RegistarUserResponse" message="tns:RegistarUserResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateConsulta">
+      <wsdl:input name="updateConsulta" message="tns:updateConsulta">
+    </wsdl:input>
+      <wsdl:output name="updateConsultaResponse" message="tns:updateConsultaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelarConsulta">
+      <wsdl:input name="cancelarConsulta" message="tns:cancelarConsulta">
+    </wsdl:input>
+      <wsdl:output name="cancelarConsultaResponse" message="tns:cancelarConsultaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listarConsultas">
+      <wsdl:input name="listarConsultas" message="tns:listarConsultas">
+    </wsdl:input>
+      <wsdl:output name="listarConsultasResponse" message="tns:listarConsultasResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="loginUser">
+      <wsdl:input name="loginUser" message="tns:loginUser">
+    </wsdl:input>
+      <wsdl:output name="loginUserResponse" message="tns:loginUserResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="reservarConsulta">
+      <wsdl:input name="reservarConsulta" message="tns:reservarConsulta">
+    </wsdl:input>
+      <wsdl:output name="reservarConsultaResponse" message="tns:reservarConsultaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ConsultationUtilityServiceSoapBinding" type="tns:ConsultationUtility">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="RegistarUser">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="RegistarUser">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="RegistarUserResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateConsulta">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="updateConsulta">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateConsultaResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelarConsulta">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="cancelarConsulta">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cancelarConsultaResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listarConsultas">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listarConsultas">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listarConsultasResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="loginUser">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="loginUser">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="loginUserResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="reservarConsulta">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="reservarConsulta">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="reservarConsultaResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ConsultationUtilityService">
+    <wsdl:port name="ConsultationUtilityPort" binding="tns:ConsultationUtilityServiceSoapBinding">
+      <soap:address location="http://localhost:8080/ConsultationWebSOAP/services"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
