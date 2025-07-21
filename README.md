@@ -3,8 +3,11 @@
 Projeto da unidade curricular de Computação Distribuída
 
 👨‍💻 Autores: Tomás Nave e André Jesus
+
 📅 Ano letivo: 2024/2025
+
 📚 Curso: Engenharia Informática
+
 🔗 Tecnologias principais: Java, RMI, REST, SOAP, Apache Tomcat, Apache CXF, JDBC, MySQL
 
 ## 🔎 Descrição do Projeto
@@ -13,9 +16,8 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de Computação D
 
 O sistema segue uma arquitetura cliente-servidor, dividida em dois componentes principais:
 
-Frontend: Responsável pela interação com os utilizadores — registo, login, e operações sobre consultas. Expõe Web Services REST e SOAP.
-
-Backend: Responsável pela gestão das marcações e lógica de negócio. Comunica com o frontend via Java RMI.
+- Frontend: Responsável pela interação com os utilizadores — registo, login, e operações sobre consultas. Expõe Web Services REST e SOAP.
+- Backend: Responsável pela gestão das marcações e lógica de negócio. Comunica com o frontend via Java RMI.
 
 ## 🧱 Arquitetura da Solução
 
