@@ -51,7 +51,7 @@ Acesso via JDBC para execução de queries SQL (CRUD).
 
 Bases de dados geridas com Azure Data Studio.
 
-### ⚙️ Funcionalidades
+## ⚙️ Funcionalidades
 - Registo e autenticação de utilizadores
 - Marcação, cancelamento, listagem e remarcação de consultas
 - Serviços acessíveis via REST ou SOAP
